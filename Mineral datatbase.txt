@@ -1,0 +1,212 @@
+.header on
+.mode column
+PRAGMA foreign_keys = ON;
+
+
+drop table if exists mineral;
+
+create table mineral(
+mineral_name text primary key not null,
+mineral_formula text,
+crystal_system text,
+maximum_hardness real,
+minimum_hardness real,
+maximum_specific_gravity real,
+minimum_specific_gravity real,
+streak_colour_ID int,
+tenacity text,
+foreign key (streak_colour_ID) references colour_ID(colour_ID)
+);
+
+
+drop table if exists sa;
+
+create table cell_parameters_and_morphology(
+morphology text, 
+mineral_name text unique not null, 
+a real,
+b real,
+c real,
+foreign key (mineral_name) references mineral(mineral_name)
+);
+
+
+
+drop table if exists lustre_ID;
+
+create table lustre_ID(
+lustre_ID integer not null primary key autoincrement,
+lustre text unique not null
+);
+
+
+drop table if exists lustre;
+
+create table lustre(
+mineral_name text not null,
+lustre_ID int,
+foreign key (mineral_name) references mineral(mineral_name),
+foreign key (lustre_ID) references lustre_ID(lustre_ID)
+);
+
+
+drop table if exists colour_ID;
+
+create table colour_ID(
+colour_ID integer not null primary key autoincrement,
+colour text unique not null
+);
+
+
+drop table if exists colour;
+
+create table colour(
+mineral_name text not null,
+colour_ID int not null,
+foreign key (mineral_name) references mineral(mineral_name),
+foreign key (colour_ID) references colour_ID(colour_ID)
+);
+
+
+drop table if exists common_impurites;
+
+create table common_impurites(
+mineral_name text not null,
+impurites text,
+foreign key (mineral_name) references mineral(mineral_name)
+);
+
+
+drop table if exists luminescent;
+
+create table luminescent(
+mineral_name text,
+colour_ID int,
+luminescent_description text,
+foreign key (mineral_name) references mineral(mineral_name),
+foreign key (colour_ID) references colour_ID(colour_ID)
+);
+
+
+drop table if exists fracture_ID;
+
+create table fracture_ID(
+fracture_ID integer not null primary key autoincrement,
+fracture text unique not null
+);
+
+
+drop table if exists fracture;
+
+create table fracture(
+mineral_name text not null,
+fracture_ID int not null,
+foreign key (mineral_name) references mineral(mineral_name),
+foreign key (fracture_ID) references fracture_ID(fracture_ID)
+);
+
+
+drop table if exists cleavage_ID;
+
+create table cleavage_ID(
+cleavage_ID integer not null primary key autoincrement,
+cleavage text unique not null
+);
+
+
+drop table if exists cleavage;
+
+create table cleavage(
+mineral_name text not null,
+cleavage_ID int not null,
+miller_indices int,
+foreign key (mineral_name) references mineral(mineral_name),
+foreign key (cleavage_ID) references cleavage_ID(cleavage_ID)
+);
+
+
+drop table if exists radioactivity_and_electromagnetism;
+
+create table radioactivity_and_electromagnetism(
+mineral_name text,
+radioactivity text,
+electromagnetism text,
+foreign key (mineral_name) references mineral(mineral_name)
+);
+
+
+drop table if exists transparency;
+
+create table transparency(
+mineral_name text not null,
+transparency text not null
+);
+
+
+drop table if exists twining_ID;
+
+create table twining_ID(
+twining_ID integer not null primary key autoincrement,
+twining text unique not null
+);
+
+
+drop table if exists twining;
+
+create table twining(
+mineral_name text not null,
+twining_ID int not null,
+twining_name text,
+miller_indices int,
+foreign key (mineral_name) references mineral(mineral_name),
+foreign key (twining_ID) references twining_ID(twining_ID)
+);
+
+
+drop table if exists photo;
+
+create table photo(
+photo_ID integer not null primary key autoincrement,
+photo blob,
+user_ID text,
+location_ID int,
+dimension_text,
+foreign key (user_ID) references user_ID(user_ID),
+foreign key (location_ID) references location_ID(location_ID)
+);
+
+
+
+drop table if exists photo_mineral;
+
+create table photo_mineral(
+photo_ID int not null,
+mineral_name text,
+twining_ID int,
+twining_name text,
+other_name text,
+foreign key (mineral_name) references mineral(mineral_name),
+foreign key (twining_ID) references twining_ID(twining_ID),
+foreign key (photo_ID) references photo(photo_ID)
+);
+
+
+drop table if exists user;
+
+create table user(
+user_ID text primary key not null,
+photo_ID int unique,
+foreign key (photo_ID) references photo(photo_ID)
+);
+
+
+drop table if exists location;
+
+create table location(
+location_ID text primary key not null,
+country text not null,
+location text not null unique
+);
+
+
+
