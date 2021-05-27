@@ -191,22 +191,28 @@ foreign key (photo_ID) references photo(photo_ID)
 );
 
 
-drop table if exists user;
+drop table if exists user_ID;
 
-create table user(
-user_ID text primary key not null,
-photo_ID int unique,
-foreign key (photo_ID) references photo(photo_ID)
+create table user_ID(
+user_ID text primary key not null
 );
 
 
-drop table if exists location;
+drop table if exists location_ID;
 
-create table location(
+create table location_ID(
 location_ID text primary key not null,
 country text not null,
 location text not null unique
 );
 
 
+drop table if exists user_photo;
+
+create table user_photo(
+photo_ID int not null,
+user_ID text not null,
+foreign key (photo_ID) references photo_ID(photo_ID),
+foreign key (user_ID) references user_ID(user_ID)
+);
 
